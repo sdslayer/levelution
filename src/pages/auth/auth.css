@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+
+body {
+    height: calc(100vh - 8em);
+    background-color: #101418;
+    color: #F3F6F9;
+    font-family: 'Muli', sans-serif;
+  }
+
+.login-page {
+    padding-top: 4em;
+}
+
+.title {
+    font-size: 5em;
+
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+    -moz-animation: fadein 2s; /* Firefox < 16 */
+     -ms-animation: fadein 2s; /* Internet Explorer */
+      -o-animation: fadein 2s; /* Opera < 12.1 */
+         animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.line-1 {
+    position: relative;
+    width: 24em;
+    margin: 0 auto;
+    font-size: 1.5em;
+    border-right: 2px solid rgba(255,255,255,.75);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    transform: translateY(-50%); 
+}
+
+.anim-typewriter {
+    animation: typewriter 2s steps(24) 1s 1 normal both,
+    blinkTextCursor 700ms steps(12) infinite normal;
+}
+
+@keyframes typewriter{
+    from{width: 0;}
+    to{width: 12.3em;}
+  }
+  @keyframes blinkTextCursor{
+    from{border-right-color: rgba(255,255,255,.75);}
+    to{border-right-color: transparent;}
+  }
+
+
+/* Sub-Body */
+
+.sub-body {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 15em 9em;
+    padding-bottom: 1em;
+}
+
+.pepe-img {
+    animation: fadein 2s;
+    animation: fadeInText 1s 2.7s forwards;
+    opacity: 0;
+}
+
+.fade-text-1 {
+    font-size: 2em;
+    transform: translateY(30px);
+    animation: fadeInText 1s 3s forwards;
+    animation-delay: 3000ms;
+    opacity: 0;
+}
+
+@keyframes fadeInText {
+    from {
+      transform: translateY(-30px);
+      opacity: 0;
+    } to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+.fade-text-2 {
+    font-size: 2em;
+    transform: translateY(30px);
+    animation: fadeInText 1s 3s forwards;
+    animation-delay: 4000ms;
+    opacity: 0;
+}
+
+@keyframes fadeInText {
+    from {
+      transform: translateY(-30px);
+      opacity: 0;
+    } to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+@keyframes normal-fade {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+/* Sign in button */
+.google-login {
+    animation: normal-fade 2s ease 5s forwards;
+    animation-delay: 5000ms;
+    opacity: 0;
+    padding: 0.6em 2em;
+    border: none;
+    outline: none;
+    color: rgb(255, 255, 255);
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.google-login:before {
+    content: "";
+    background: linear-gradient(
+        45deg,
+        #ff0000,
+        #ff7300,
+        #fffb00,
+        #48ff00,
+        #00ffd5,
+        #002bff,
+        #7a00ff,
+        #ff00c8,
+        #ff0000
+    );
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing-google-login 20s linear infinite;
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 10px;
+}
+
+@keyframes glowing-google-login {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.google-login:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+.fade-text-2 {
+    font-size: 2em
+}
+
+.google-login {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.google-login:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-google-login 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-google-login {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.google-login:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
