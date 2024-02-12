@@ -3,13 +3,16 @@ import { getDatabase, set, get, push, update, remove, ref, child, onValue } from
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import './user.css'
+import './user.css';
+import axios from 'axios';
 import { type } from '@testing-library/user-event/dist/type';
 
 export const User = () => {
     
     const [userDisplayName, setDisplayName] = useState(null);
     const [userLastLogin, setLastLogin] = useState(null);
+    const [userMinecraftKey, setMinecraftKey] = useState("");
+    const [bedwarsLevel, setBedwarsLevel] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,6 +57,23 @@ export const User = () => {
         }
     }
 
+    const handleMinecraftFormSubmit = (event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+        
+        console.log("Minecraft Key:", userMinecraftKey);
+        const uuid = "ab5e4e78-c45c-42ba-b12b-197c9edade37";
+        const key = userMinecraftKey;
+        axios.get("https://api.hypixel.net/player?uuid=" + uuid + "&key=" + key)
+        .then(({data}) => {
+            console.log(data);
+            const bwlevel = data['player']['achievements']['bedwars_level']
+            console.log(bwlevel);
+            setBedwarsLevel(bwlevel);
+        })
+        .catch(err => {
+            console.error(err);
+    })};
+
 
     const signOutAndNavigate = async () => {
         try {
@@ -71,22 +91,27 @@ export const User = () => {
         return new Date(dateString).toLocaleString(undefined, options);
     }
 
+    function buttonTest() {
+        
+    }
+
     return (
         <div className='start-group'>
             <h1>Welcome {userDisplayName}</h1> {/* Render the user's email */}
             <h3>Last Login: {formatHumanReadableDate(userLastLogin)}</h3>
 
             <h3>Games</h3>
-            <form>
-            <label>
-                Minecraft (Hypixel)
-                <input type="text" name="name" />
-            </label>
-            <input type="submit" value="Submit" />
+            <form onSubmit={handleMinecraftFormSubmit}> {/* Attach the event handler to the form submission */}
+                <label>
+                    Minecraft (Hypixel)
+                    <input type="text" name="name" value={userMinecraftKey} onChange={(e) => setMinecraftKey(e.target.value)} /> {/* Update the state with the value of the text box */}
+                </label>
+                <input type="submit" value="Submit" />
             </form>
 
-            <h5>test</h5>
-            <button onClick={() => getLastLogin()}>TEST</button>
+            <h4>Level: {bedwarsLevel}</h4>
+
+            <button onClick={() => buttonTest()}>TEST</button>
 
             <div className='signout'>
                 <button className="signout-button" onClick={signOutAndNavigate}>Sign Out</button>
