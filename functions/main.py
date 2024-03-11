@@ -47,4 +47,4 @@ def fetch_and_store_data(data):
 @scheduler_fn.on_schedule(schedule="every 5 minutes")
 def trigger_cloud_function(event: scheduler_fn.ScheduledEvent) -> None:
     print("Scheduled function triggered.")
-    fetch_and_store_data({'data': event.data})
+    fetch_and_store_data({})
