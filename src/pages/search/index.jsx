@@ -163,6 +163,7 @@ export const Search = () => {
                             <p>Bedwars Level: {searchedUserData.bedwarsLevel}</p>
                         )}
                         {/* Add other game levels if needed */}
+                        <button className="friendreq-button">Send Friend Request</button>
                     </div>
                 )}
             </div>

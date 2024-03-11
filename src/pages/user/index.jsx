@@ -202,6 +202,9 @@ export const User = () => {
                 )}
             </div>
 
+            <h3>Friend Requests (0)</h3>
+            {/*List friend requests*/}
+
             <div className='signout'>
                 <button className="signout-button" onClick={signOutAndNavigate}>Sign Out</button>
             </div>
