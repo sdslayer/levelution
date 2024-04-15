@@ -16,7 +16,7 @@ export const User = () => {
     const [userBedwarsName, setBedwarsName] = useState("");
     const [userBedwarsID, setBedwarsID] = useState("");
     const [userProfilePicture, setuserProfilePicture] = useState("");
-    const [bedwarsLevel, setBedwarsLevel] = useState(null);
+    const [bedwarsData, setBedwarsData] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +26,7 @@ export const User = () => {
             if (user) {
                 setDisplayName(user.displayName);
                 setuserProfilePicture(user.photoURL);
+                getBedwarsLevel();
     
                 getLastLogin().then(lastLogin => {
                     setLastLogin(lastLogin);
@@ -61,6 +62,24 @@ export const User = () => {
         try {
             const userData = await getUserData();
             return userData.lastLogin || '';
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async function getBedwarsLevel() {
+        try {
+            const userData = await getUserData();
+            const latestData = userData?.data?.hypixelBW;
+            if (latestData) {
+                const latestEntry = Object.entries(latestData).pop();
+                const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+                const time = parseInt(latestEntry[0]) * 1000 || 0;
+                const bwdata = [level, time];
+                setBedwarsData(bwdata)
+                return level || '';
+            }
+            return '';
         } catch (error) {
             throw error;
         }
@@ -105,6 +124,14 @@ export const User = () => {
         const game = 'hypixelBW';
         
         console.log("hypixelBW Name:", userBedwarsName);
+        const nameRef = ref(db, `users/${email}/names/${game}`);
+        set(child(nameRef, 'name'), userBedwarsName)
+            .then(() => {
+                console.log(`Key stored in the database under ${email}/names/${game}`);
+            })
+            .catch(error => {
+                console.error("Error storing key in the database:", error);
+            });
         axios.get("https://playerdb.co/api/player/minecraft/" + userBedwarsName)
         .then(({data}) => {
             console.log(data);
@@ -144,24 +171,24 @@ export const User = () => {
         return new Date(dateString).toLocaleString(undefined, options);
     }
 
-    function handleBedwarsLevelButton() {
-        if (userBedwarsKey && userBedwarsID){
-            axios.get("https://api.hypixel.net/player?uuid=" + userBedwarsID + "&key=" + userBedwarsKey)
-            .then(({data}) => {
-                console.log(data);
-                const bwlevel = data['player']['achievements']['bedwars_level'];
-                setBedwarsLevel(bwlevel);
+    // function handleBedwarsLevelButton() {
+    //     if (userBedwarsKey && userBedwarsID){
+    //         axios.get("https://api.hypixel.net/player?uuid=" + userBedwarsID + "&key=" + userBedwarsKey)
+    //         .then(({data}) => {
+    //             console.log(data);
+    //             const bwlevel = data['player']['achievements']['bedwars_level'];
+    //             setBedwarsLevel(bwlevel);
     
                 
-            })
-            .catch(err => {
-                console.error(err);
-            });
-        }
-        else{
-            setBedwarsLevel("Missing one or more arguments!")
-        }
-    }
+    //         })
+    //         .catch(err => {
+    //             console.error(err);
+    //         });
+    //     }
+    //     else{
+    //         setBedwarsLevel("Missing one or more arguments!")
+    //     }
+    // }
 
     return (
         <div className='user-account'>
@@ -195,10 +222,13 @@ export const User = () => {
                     <input type="submit" value="Submit" />
                 </form>
 
-                <button onClick={() => handleBedwarsLevelButton()}>Print Level</button>
+                {/* <button onClick={() => handleBedwarsLevelButton()}>Print Level</button> */}
 
-                {bedwarsLevel && (
-                    <p>Level: {bedwarsLevel}</p>
+                {bedwarsData[0] && bedwarsData[1] && (
+                    <div>
+                        <p>Bedwars Level: {bedwarsData[0]}</p>
+                        <p>Last Checked: {formatHumanReadableDate(bedwarsData[1])}</p>
+                    </div>
                 )}
             </div>
 

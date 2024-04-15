@@ -81,17 +81,24 @@ export const Search = () => {
                         // Fetch last login time
                         const userData = await getUserData(userEmail);
                         const lastLogin = userData.lastLogin || '';
+                        const latestData = userData?.data?.hypixelBW;
+                        var level = 'N/A';
+                        if (latestData) {
+                            const latestEntry = Object.entries(latestData).pop();
+                            level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+                        }
     
                         // Set searched user data
                         setSearchedUserData({
                             email: userEmail,
                             lastLogin: lastLogin,
                             profilePicture: userData.profilePhoto, // Assuming profile picture is stored in the database
-                            bedwarsLevel: userData.bedwarsLevel || null, // Assuming bedwars level is stored in the database
+                            bedwarsLevel: level || null, // Assuming bedwars level is stored in the database
                             // Add other game levels if needed
                         });
                         console.log(searchedUserData)
                         console.log(userData)
+                        
                     }
                 }).catch((error) => {
                     console.error("Error fetching display name:", error);
@@ -151,18 +158,14 @@ export const Search = () => {
                 {/* Display search results */}
                 {searchedUserData && (
                     <div className="search-results">
-                        {/* Display user information */}
                         <h3>User Information</h3>
                         <p>Email: {searchedUserData.email}</p>
-                        {/* Add other user information here */}
                         <p>Last Login: {formatHumanReadableDate(searchedUserData.lastLogin)}</p>
                         <img src={searchedUserData.profilePicture} alt="Profile" />
-                        {/* Display game levels */}
                         <h4>Game Levels</h4>
                         {searchedUserData.bedwarsLevel && (
                             <p>Bedwars Level: {searchedUserData.bedwarsLevel}</p>
                         )}
-                        {/* Add other game levels if needed */}
                         <button className="friendreq-button">Send Friend Request</button>
                     </div>
                 )}

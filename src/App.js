@@ -4,6 +4,7 @@ import { Auth } from "./pages/auth/index";
 import { Main } from "./pages/main/index";
 import { User } from "./pages/user/index";
 import { Search } from "./pages/search/index";
+import { Leaderboards } from './pages/leaderboards/index';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/main" exact element={<Main />} />
           <Route path="/user" exact element={<User />} />
           <Route path="/search" exact element={<Search />} />
+          <Route path="/leaderboards" exact element={<Leaderboards />} />
         </Routes>
       </Router>
     </div>
