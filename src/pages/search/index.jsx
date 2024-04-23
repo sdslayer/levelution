@@ -6,6 +6,7 @@ import { auth } from '../../config/firebase-config';
 import './search.css';
 import axios from 'axios';
 import { type } from '@testing-library/user-event/dist/type';
+import NavBar from '../../components/WebNavbar';
 
 
 export const Search = () => {
@@ -14,6 +15,7 @@ export const Search = () => {
     const [userLastLogin, setLastLogin] = useState(null);
     const [searchQuery, setSearchQuery] = useState(""); // State to store the search query
     const [searchedUserData, setSearchedUserData] = useState(null); // State to store the data of the searched user
+    const [requestSent, setRequestStatus] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -71,34 +73,23 @@ export const Search = () => {
                 const userEmail = childSnapshot.key.replace('_', '.'); // Convert back to email format
                 const displayNameRef = child(childSnapshot.ref, 'name');
     
-                // Fetch the display name and last login time associated with the email
+                // Fetch the display name associated with the email
                 get(displayNameRef).then(async (displayNameSnapshot) => {
                     const displayName = displayNameSnapshot.val();
                     console.log("Checking user:", userEmail, "with display name:", displayName);
                     
                     // Check if the display name matches the search query
                     if (displayName === searchQuery) {
-                        // Fetch last login time
+                        // Fetch user data
                         const userData = await getUserData(userEmail);
-                        const lastLogin = userData.lastLogin || '';
-                        const latestData = userData?.data?.hypixelBW;
-                        var level = 'N/A';
-                        if (latestData) {
-                            const latestEntry = Object.entries(latestData).pop();
-                            level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
-                        }
     
                         // Set searched user data
                         setSearchedUserData({
                             email: userEmail,
-                            lastLogin: lastLogin,
-                            profilePicture: userData.profilePhoto, // Assuming profile picture is stored in the database
-                            bedwarsLevel: level || null, // Assuming bedwars level is stored in the database
-                            // Add other game levels if needed
+                            lastLogin: userData.lastLogin || '',
+                            profilePicture: userData.profilePhoto || '',
+                            bedwarsLevel: userData.bedwarsLevel || null,
                         });
-                        console.log(searchedUserData)
-                        console.log(userData)
-                        
                     }
                 }).catch((error) => {
                     console.error("Error fetching display name:", error);
@@ -108,6 +99,19 @@ export const Search = () => {
             console.error("Error searching for user:", error);
         }
     }
+
+    const sendFriendRequest = async () => {
+        try {
+            const currentUserEmail = getAuth().currentUser.email;
+            const incomingRequestsRef = ref(db, `users/${searchedUserData.email.replace('.', '_')}/incomingRequests`);
+            await set(child(incomingRequestsRef, currentUserEmail.replace('.', '_')), true);
+            console.log(`Friend request sent to ${searchedUserData.email}`);
+            setRequestStatus(true);
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+        }
+    };
+    
     
     async function getUserData(email) {
         const userRef = ref(db, `users/${email.replace('.', '_')}`);
@@ -142,6 +146,7 @@ export const Search = () => {
 
     return (
         <div className='user-account'>
+        <NavBar />
             <div className='user-info'>
             </div>
     
@@ -160,13 +165,14 @@ export const Search = () => {
                     <div className="search-results">
                         <h3>User Information</h3>
                         <p>Email: {searchedUserData.email}</p>
+                        <p></p>
                         <p>Last Login: {formatHumanReadableDate(searchedUserData.lastLogin)}</p>
                         <img src={searchedUserData.profilePicture} alt="Profile" />
                         <h4>Game Levels</h4>
                         {searchedUserData.bedwarsLevel && (
                             <p>Bedwars Level: {searchedUserData.bedwarsLevel}</p>
                         )}
-                        <button className="friendreq-button">Send Friend Request</button>
+                        <button className="friendreq-button" onClick={sendFriendRequest}>Send Friend Request</button>
                     </div>
                 )}
             </div>

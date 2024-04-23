@@ -60,4 +60,4 @@ def fetch_and_store_data(data):
 @scheduler_fn.on_schedule(schedule="0 * * * *") # crontab = at every minute 0
 def trigger_cloud_function(event: scheduler_fn.ScheduledEvent) -> None:
     print("Scheduled function triggered.")
-    fetch_and_store_data({})
+    #fetch_and_store_data({})

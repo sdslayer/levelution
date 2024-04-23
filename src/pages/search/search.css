@@ -192,3 +192,36 @@ gap: 15px
     width: 80%; /* Adjust the width of the box */
     max-width: 400px; /* Add a maximum width to prevent excessive stretching */
   }
+
+  .nav-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between; /* Aligns the first three items to the left and the last item to the right */
+}
+
+.user-link {
+    margin-left: auto; /* Aligns the User link to the right */
+}
+
+.nav-list li {
+    margin-right: 20px;
+}
+
+.nav-list li:last-child {
+    margin-right: 0;
+}
+
+.nav-list li a {
+    color: #F3F6F9;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+
+.nav-list li a:hover {
+    background-color: #333;
+}

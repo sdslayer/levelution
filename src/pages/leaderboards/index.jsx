@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import './leaderboards.css';
+import NavBar from '../../components/WebNavbar';
 
 export const Leaderboards = () => {
     const [userDisplayName, setDisplayName] = useState(null);
@@ -62,6 +63,7 @@ export const Leaderboards = () => {
 
     return (
         <div className='user-account'>
+        <NavBar />
             <h1>Leaderboards</h1>
             <h2>Hypixel (Bedwars)</h2>
             <table>
