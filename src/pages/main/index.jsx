@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { getDatabase, set, get, push, ref, onValue } from "firebase/database";
 import { getAuth, signOut } from "firebase/auth";
