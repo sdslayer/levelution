@@ -1,7 +1,7 @@
 import { auth, provider, database } from "../../config/firebase-config"; // Import database from firebase-config
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { ref, set, get, child, exists, update } from "firebase/database"; // Import ref, set, get, child, exists, update from firebase/database
+import { ref, get, child, update } from "firebase/database"; // Import ref, set, get, child, exists, update from firebase/database
 // import './auth.css';
 
 export const Auth = () => {
