@@ -30,6 +30,9 @@ const NavBar = () => {
                     <Link to="/search">Search</Link>
                 </li>
                 <li>
+                    <Link to="/help">Help</Link>
+                </li>
+                <li>
                   <Link to="/user">Your Profile</Link>
                 </li>
                 <li className="user-link">

@@ -11,28 +11,8 @@ import time
 # Initialize Firebase app
 app = initialize_app()
 
-# Define database Cloud Function to fetch key for each email and make API request
-def fetch_and_store_data(data):
-    # print("IF THIS PRINTS WE MADE IT INTO THE FUNCTION CALL.")
-    # key = data['value']
-    
-    # Iterate through all users
-    # print("Attempting to get user ref")
-    users_ref = db.reference('/users')
-    # print("That succeeded, now to get the users as a dict")
-    users = users_ref.get()
-    # print("wow that worked too, now we iterate through the emails???")
-    for email, _ in users.items():
-        print(email)
-        #print(f"trying to set ref for key")
-        bwkey_ref = db.reference(f'/users/{email}/keys/hypixelBW/key')
-        bwid_ref = db.reference(f'/users/{email}/ids/hypixelBW/id')
-        #print("ref success")
-        #print(bwkey_ref)
-        bwkey = bwkey_ref.get()
-        bwid = bwid_ref.get()
-        #print(f"bwkey get success: {bwkey}")
-        # Make sure the email has the required key
+def fetch_bedwars(bwkey, bwid, email):
+        print("ENTER BEDWARS FUNCTION")
         if bwkey is None or bwid is None:
             print(f"EMAIL {email} MISSING BW KEY OR ID")
         else:
@@ -55,9 +35,54 @@ def fetch_and_store_data(data):
             else:
                 print(f"Failed to fetch data for {email}. Status code: {response.status_code}")
 
+def fetch_gdstars(gdname, email):
+        print("ENTER GD FUNCTION")
+        if gdname is None:
+            print(f"ID {gdname} NOT FOUND")
+        else:
+            print(f"ID: {gdname}")
+            api_url = f'https://api.prevter.me/gd/profile/{gdname}'
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                star_count = response.json().get('stars', {})
+                print(star_count)
+                current_time = int(time.time()) # current time (wow)
+                db.reference(f'/users/{email}/data/GD/{current_time}').set(star_count) # will store under /currenttime/level, so like hypixelBW/2918309128 = 913
+                print(f"STAR COUNT FOR {email} AT {current_time} IS {star_count}") # i <3 debug statements
+
+# Define database Cloud Function to fetch key for each email and make API request
+def fetch_and_store_data(data):
+    # print("IF THIS PRINTS WE MADE IT INTO THE FUNCTION CALL.")
+    # key = data['value']
+    
+    # Iterate through all users
+    print("Attempting to get user ref")
+    users_ref = db.reference('/users')
+    print("That succeeded, now to get the users as a dict")
+    users = users_ref.get()
+    print("wow that worked too, now we iterate through the emails???")
+    for email, _ in users.items():
+        print(email)
+        print(f"trying to set ref for key")
+        bwkey_ref = db.reference(f'/users/{email}/keys/hypixelBW/key')
+        bwid_ref = db.reference(f'/users/{email}/ids/hypixelBW/id')
+        gd_ref = db.reference(f'/users/{email}/names/GD/name')
+        #print("ref success")
+        #print(bwkey_ref)
+        bwkey = bwkey_ref.get()
+        bwid = bwid_ref.get()
+        gdname = gd_ref.get()
+        print(f"bwkey get success: {bwkey}")
+        print(f"gdname get success: {gdname}")
+        # Make sure the email has the required key
+        print("fetching bedwars hopefully")
+        fetch_bedwars(bwkey=bwkey, bwid=bwid, email=email)
+        #print("fetching gd hopefully")
+        #fetch_gdstars(gdname=gdname, email=email)
+
     return 'made it out'
 
-@scheduler_fn.on_schedule(schedule="0 * * * *") # crontab = at every minute 0
+@scheduler_fn.on_schedule(schedule="0 0 * * *") # crontab = at every minute 0
 def trigger_cloud_function(event: scheduler_fn.ScheduledEvent) -> None:
     print("Scheduled function triggered.")
     #fetch_and_store_data({})

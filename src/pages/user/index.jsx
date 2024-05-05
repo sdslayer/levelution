@@ -33,12 +33,16 @@ export const User = () => {
   const [userLastLogin, setLastLogin] = useState(null);
   const [userBedwarsKey, setBedwarsKey] = useState("");
   const [userBedwarsName, setBedwarsName] = useState("");
+  const [userGDName, setGDName] = useState("");
   const [userBedwarsID, setBedwarsID] = useState("");
   const [userProfilePicture, setuserProfilePicture] = useState("");
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [currentBedwarsData, setCurrentBedwarsData] = useState([]);
   const [bedwarsData, setBedwarsData] = useState([]);
+  const [currentGDData, setCurrentGDData] = useState([]);
+  const [GDData, setGDData] = useState([]);
   const [domains, setDomains] = useState([]);
+  const [domains2, setDomains2] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,6 +53,7 @@ export const User = () => {
         setuserProfilePicture(user.photoURL);
         fetchIncomingRequests(user);
         getBedwarsLevel();
+        getGDData();
 
         getLastLogin()
           .then((lastLogin) => {
@@ -92,19 +97,19 @@ export const User = () => {
     try {
       const userData = await getUserData();
       const latestData = userData?.data?.hypixelBW;
-    console.log("aaaaaa")
-    //   console.log(latestData)
-    //   console.log(transformBedwarsData(latestData))
+      console.log("aaaaaa");
+      //   console.log(latestData)
+      //   console.log(transformBedwarsData(latestData))
       if (latestData) {
-        var fullbwdata = transformBedwarsData(latestData)
-        var lowerdom = fullbwdata[0]['level'] - 2
-        var higherdom = fullbwdata[fullbwdata.length - 1]['level'] + 2
-        setDomains([lowerdom, higherdom])
+        var fullbwdata = transformBedwarsData(latestData);
+        var lowerdom = fullbwdata[0]["level"] - 2;
+        var higherdom = fullbwdata[fullbwdata.length - 1]["level"] + 2;
+        setDomains([lowerdom, higherdom]);
         const latestEntry = Object.entries(latestData).pop();
         const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
         const time = parseInt(latestEntry[0]) * 1000 || 0;
         const bwdata = [level, time];
-        setBedwarsData(fullbwdata)
+        setBedwarsData(fullbwdata);
         setCurrentBedwarsData(bwdata);
         return level || "";
       }
@@ -114,6 +119,30 @@ export const User = () => {
     }
   }
 
+  async function getGDData() {
+    try {
+      const userData = await getUserData();
+      const latestData = userData?.data?.GD;
+      console.log("aaabbbbbaaa");
+      console.log(latestData);
+      if (latestData) {
+        var fulldata = transformGDData(latestData);
+        var lowerdom = fulldata[0]["level"] - 2;
+        var higherdom = fulldata[fulldata.length - 1]["level"] + 2;
+        setDomains2([lowerdom, higherdom]);
+        const latestEntry = Object.entries(latestData).pop();
+        const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+        const time = parseInt(latestEntry[0]) * 1000 || 0;
+        const gddata = [level, time];
+        setGDData(fulldata);
+        setCurrentGDData(gddata);
+        return level || "";
+      }
+      return "";
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async function fetchIncomingRequests(user) {
     try {
@@ -232,16 +261,6 @@ export const User = () => {
       .catch((error) => {
         console.error("Error storing key in the database:", error);
       });
-    // axios.get("https://api.hypixel.net/player?uuid=" + uuid + "&key=" + key)
-    // .then(({data}) => {
-    //     console.log(data);
-    //     const bwlevel = data['player']['achievements']['bedwars_level'];
-    //     setBedwarsLevel(bwlevel);
-
-    // })
-    // .catch(err => {
-    //     console.error(err);
-    // });
   };
 
   const handleBedwarsNameSubmit = (event) => {
@@ -285,6 +304,26 @@ export const User = () => {
       });
   };
 
+  const handleGDFormSubmit = (event) => {
+    event.preventDefault();
+
+    const user = getAuth().currentUser;
+    const email = user.email.replace(".", "_");
+    const game = "GD";
+
+    console.log("GD Name:", userGDName);
+    // const uuid = "ab5e4e78-c45c-42ba-b12b-197c9edade37";
+    const name = userGDName;
+    const nameRef = ref(db, `users/${email}/names/${game}`);
+    set(child(nameRef, "name"), name)
+      .then(() => {
+        console.log(`Name stored in the database under ${email}/names/${game}`);
+      })
+      .catch((error) => {
+        console.error("Error storing name in the database:", error);
+      });
+  };
+
   const signOutAndNavigate = async () => {
     try {
       // Sign out
@@ -325,11 +364,17 @@ export const User = () => {
   //     }
   // }
 
-
   const transformBedwarsData = (data) => {
     return Object.entries(data).map(([time, level]) => ({
       time: new Date(parseInt(time) * 1000), // Convert Unix timestamp to Date object
       level: level,
+    }));
+  };
+
+  const transformGDData = (data) => {
+    return Object.entries(data).map(([time, level]) => ({
+      time: new Date(parseInt(time) * 1000), // Convert Unix timestamp to Date object
+      stars: level,
     }));
   };
 
@@ -376,44 +421,97 @@ export const User = () => {
           <input type="submit" value="Submit" />
         </form>
 
-        {/* <button onClick={() => handleBedwarsLevelButton()}>Print Level</button> */}
-
         {currentBedwarsData[0] && currentBedwarsData[1] && (
           <div>
             <p>Bedwars Level: {currentBedwarsData[0]}</p>
-            <p>Last Checked: {formatHumanReadableDate(currentBedwarsData[1])}</p>
+            <p>
+              Last Checked: {formatHumanReadableDate(currentBedwarsData[1])}
+            </p>
+            <br></br>
           </div>
         )}
+
+        {/* <button onClick={() => handleBedwarsLevelButton()}>Print Level</button> */}
+
+        <h3>Geometry Dash (Star Count)</h3>
+        <form onSubmit={handleGDFormSubmit}>
+          <label>
+            User ID
+            <input
+              type="text"
+              name="name"
+              value={userGDName}
+              onChange={(e) => setGDName(e.target.value)}
+            />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
       </div>
 
-      {bedwarsData && (
+      {currentGDData[0] && currentGDData[1] && (
+        <div>
+          <p>Star Count: {currentGDData[0]}</p>
+          <p>Last Checked: {formatHumanReadableDate(currentGDData[1])}</p>
+          <br></br>
+        </div>
+      )}
+
+      {!bedwarsData.length && <h2 className="no-data">NO DATA</h2>}
+
+      {bedwarsData.length > 0 && (
         <LineChart
-        width={500}
-        height={300}
-        data={bedwarsData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" />
-        <YAxis domain={domains} />
-        <Tooltip />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="level"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
-      )
+          width={500}
+          height={300}
+          data={bedwarsData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis domain={domains} />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="level"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      )}
 
-      }
+      {!GDData.length && <h2 className="no-data">NO DATA</h2>}
 
+      {GDData.length > 0 && (
+        <LineChart
+          width={500}
+          height={300}
+          data={GDData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis domain={domains2} />{" "}
+          {/* Use domains2 state to set Y-axis domain */}
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="stars"
+            stroke="#82ca9d"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      )}
 
       <div className="incoming-requests">
         <h3>Incoming Friend Requests</h3>
