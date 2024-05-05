@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getDatabase, set, get, push, update, remove, ref, child, onValue } from "firebase/database";
+import { getDatabase, set, get, ref, child } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import './search.css';
-import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import NavBar from '../../components/WebNavbar';
 
 export const Search = () => {
 
-    const [userDisplayName, setDisplayName] = useState(null);
-    const [userLastLogin, setLastLogin] = useState(null);
     const [searchQuery, setSearchQuery] = useState(""); // State to store the search query
     const [searchedUserData, setSearchedUserData] = useState(null); // State to store the data of the searched user
     const [requestSent, setRequestStatus] = useState(false);
@@ -21,13 +18,7 @@ export const Search = () => {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                setDisplayName(user.displayName);
-
-                getLastLogin().then(lastLogin => {
-                    setLastLogin(lastLogin);
-                }).catch(error => {
-                    console.error("Error fetching last login time:", error);
-                });
+                console.log("")
             } else {
                 navigate('/');
             }
@@ -35,30 +26,6 @@ export const Search = () => {
     }, [navigate]);
 
     const db = getDatabase();
-
-    async function getLastLogin() {
-        try {
-            const userData = await getUserData();
-            return userData.lastLogin || '';
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    function getUserData() {
-        const user = getAuth().currentUser;
-        const userRef = ref(db, `users/${user.email.replace('.', '_')}`);
-
-        return get(userRef)
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val() || 0;
-                    const stringData = JSON.stringify(userData)
-                    const convData = JSON.parse(stringData)
-                    return convData;
-                }
-            });
-    }
 
     async function searchUser() {
         try {
@@ -153,6 +120,7 @@ export const Search = () => {
             await set(child(incomingRequestsRef, currentUserEmail.replace('.', '_')), true);
             console.log(`Friend request sent to ${searchedUserData.email}`);
             setRequestStatus(true);
+            console.log(requestSent)
         } catch (error) {
             console.error("Error sending friend request:", error);
         }
@@ -289,6 +257,7 @@ export const Search = () => {
                                 </LineChart>
                             </div>
                         )}
+                        
                         <button className="friendreq-button" onClick={sendFriendRequest}>Send Friend Request</button>
                     </div>
                 )}

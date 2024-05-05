@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getDatabase, set, get, push, update, remove, ref, child, onValue } from "firebase/database";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getDatabase, set, get, push, ref, onValue } from "firebase/database";
+import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
 import './main.css'
@@ -12,7 +12,6 @@ export const Main = () => {
     const [userJoke, setUserJoke] = useState("");
     const [userComment, setUserComment] = useState("");
     const [comments, setComments] = useState({}); // State to hold comments for each joke
-    const [userJokeImage, setUserJokeImage] = useState(null); 
     const [userJokes, setUserJokes] = useState([]); 
     const [jokeId, setJokeId] = useState(0);
     const [sortMethod, setSortMethod] = useState("newest");
@@ -23,6 +22,12 @@ export const Main = () => {
 
     useEffect(() => { // Checks if user is signed in, if not send them to the login page.
         const user = getAuth().currentUser;
+        try {
+            console.log(currentPage)
+        }
+        catch (error) {
+            console.error("Error:", error);
+        }
 
         if (!user) {
             navigate('/');
@@ -71,7 +76,7 @@ export const Main = () => {
     } else {
       fetchJokesFromFirebase(age); 
     }
-  }, [navigate, age]);
+  }, [navigate]);
 
 
     const signOutAndNavigate = async () => {
@@ -101,7 +106,6 @@ export const Main = () => {
             // Prepend the new joke to the array
             setUserJokes([newJoke, ...userJokes]);
             setUserJoke("");
-            setUserJokeImage(null);
     
             // Update the database
             const jokePath = age === "older-18" ? `Jokes/older-18` : `Jokes/younger-18`;
@@ -156,13 +160,6 @@ export const Main = () => {
     }
 
     // Function to add user joke to the list
-    const addUserJoke = () => {
-        if (userJoke.trim() !== "") {
-            setUserJokes([...userJokes, { joke: userJoke, rating: null, age: age, date: new Date() }]);
-            setUserJoke(""); 
-            setUserJokeImage(null);
-        }
-    }
 
     // Function to handle rating of a user-submitted joke
     const rateUserJoke = (index, rating) => {
@@ -217,9 +214,6 @@ export const Main = () => {
         return 0;
     });
 
-    const indexOfLastJoke = currentPage * jokesPerPage;
-    const indexOfFirstJoke = indexOfLastJoke - jokesPerPage;
-    const currentJokes = sortedUserJokes.slice(indexOfFirstJoke, indexOfLastJoke);
 
     function formatHumanReadableDate(dateString) {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };

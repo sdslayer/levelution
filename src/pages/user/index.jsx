@@ -3,19 +3,15 @@ import {
   getDatabase,
   set,
   get,
-  push,
-  update,
   remove,
   ref,
   child,
-  onValue,
 } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
 import "./user.css";
 import axios from "axios";
-import { type } from "@testing-library/user-event/dist/type";
 import {
   LineChart,
   Line,
@@ -24,7 +20,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from "recharts";
 import NavBar from "../../components/WebNavbar";
 
@@ -294,6 +289,7 @@ export const User = () => {
               `Key stored in the database under ${email}/ids/${game}`
             );
             setBedwarsID(id);
+            console.log(userBedwarsID)
           })
           .catch((error) => {
             console.error("Error storing key in the database:", error);

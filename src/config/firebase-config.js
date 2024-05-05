@@ -20,6 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+console.log(analytics)
 
 // Initialize Realtime Database
 const database = getDatabase(app);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getDatabase, ref, get, orderByChild, limitToFirst } from "firebase/database";
+import { getDatabase, ref, get, } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
@@ -16,6 +16,7 @@ export const Leaderboards = () => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setDisplayName(user.displayName);
+                console.log(userDisplayName)
                 fetchLeaderboardData();
             } else {
                 navigate('/');
