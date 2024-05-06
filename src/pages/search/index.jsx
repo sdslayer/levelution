@@ -38,12 +38,15 @@ export const Search = () => {
       console.log(searchedUserData);
 
       var yourEmail = getAuth().currentUser.email.replace('.', '_')
-      var friendArray = Object.keys(searchedUserData.friends) || []
+      if (searchedUserData.friends) {
+        var friendArray = Object.keys(searchedUserData.friends) || []
 
-      if (friendArray.includes(yourEmail)) {
-        setFriendStatus(true)
-      } else {
-        setFriendStatus(false)
+        if (friendArray.includes(yourEmail)) {
+          setFriendStatus(true)
+        } else {
+          setFriendStatus(false)
+        }
+
       }
     }
 
