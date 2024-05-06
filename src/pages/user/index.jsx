@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import {
@@ -11,8 +12,8 @@ import {
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase-config";
-import "./user.css";
 import axios from "axios";
+import styles from './user.module.css'
 import {
   LineChart,
   Line,
@@ -23,6 +24,8 @@ import {
   Legend,
 } from "recharts";
 import NavBar from "../../components/WebNavbar";
+import HypixelLogo from "../../images/logos/hypixel.png"
+import GDLogo from "../../images/logos/gd.png"
 
 export const User = () => {
   const [userDisplayName, setDisplayName] = useState(null);
@@ -320,14 +323,6 @@ export const User = () => {
       .catch((error) => {
         console.error("Error storing name in the database:", error);
       });
-    
-    axios.get("https://api.prevter.me/gd/profile/" + name)
-            .then(({data}) => {
-                console.log(data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
 
       // set(child(actualnameRef, "actualName"), name)
       //   .then(() => {
@@ -338,16 +333,7 @@ export const User = () => {
       //   });
   };
 
-  const signOutAndNavigate = async () => {
-    try {
-      // Sign out
-      await signOut(auth);
-      localStorage.removeItem("auth"); // Remove user data from local storage
-      navigate("/"); // Navigate to auth
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
+
 
   function formatHumanReadableDate(dateString) {
     const options = {
@@ -377,52 +363,81 @@ export const User = () => {
   //         setBedwarsLevel("Missing one or more arguments!")
   //     }
   // }
-
   const transformBedwarsData = (data) => {
     return Object.entries(data).map(([time, level]) => ({
-      time: new Date(parseInt(time) * 1000), // Convert Unix timestamp to Date object
+      time: formatDate(new Date(parseInt(time) * 1000)), // Format date string
       level: level,
     }));
   };
-
+  
   const transformGDData = (data) => {
     return Object.entries(data).map(([time, level]) => ({
-      time: new Date(parseInt(time) * 1000), // Convert Unix timestamp to Date object
+      time: formatDate(new Date(parseInt(time) * 1000)), // Format date string
       stars: level,
     }));
   };
-
+  
+  function formatDate(date) {
+    const options = {
+      month: "short",
+      day: "2-digit",
+    };
+    return date.toLocaleString(undefined, options);
+  }
+  
   return (
-    <div className="user-account">
+    <div className={styles["user-account"]}>
       <NavBar />
-      <div className="user-info">
-        {/* Profile Picture */}
-        <img src={userProfilePicture} alt="" />
-
-        {/* Display Username */}
-        <h1>Welcome, {userDisplayName}!</h1>
-
-        {/* Display Last Login */}
-        <p>Last Login: {formatHumanReadableDate(userLastLogin)}</p>
+      <div className={styles["user-info"]}>
+        <div className={styles["profile-header"]}>
+          <h1>Welcome, {userDisplayName}!</h1>
+          <img src={userProfilePicture} alt="Profile" />
+        </div>
       </div>
 
-      <div className="game-info">
-        <h2>Games</h2>
-        <h3>Minecraft (Hypixel Bedwars)</h3>
-        <form onSubmit={handleBedwarsFormSubmit}>
-          <label>
-            API Key
-            <input
-              type="text"
-              name="name"
-              value={userBedwarsKey}
-              onChange={(e) => setBedwarsKey(e.target.value)}
-            />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
+      <div className={styles["event-list"]}>
+      <h2>Recent Events</h2>
+      <div className={styles["events"]}>
+        <h4>Event 1</h4>
+        <h4>Event 2</h4>
+        <h4>Event 3</h4>
+        <h4>Event 4</h4>
+      </div>
+    </div>
 
-        <form onSubmit={handleBedwarsNameSubmit}>
+      <div className={styles["game-info"]}>
+        <h2>Games</h2>
+        {/* Bedwars section */}
+        <div className={styles["game-section"]}>
+          <div className={styles["graph"]}>
+            <LineChart
+              width={500}
+              height={300}
+              data={bedwarsData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis domain={domains} />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="level"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+              />
+            </LineChart>
+          </div>
+          <div className={styles["game-details"]}>
+            <img src={HypixelLogo} alt="Bedwars Icon" />
+            <h3>Hypixel Bedwars</h3>
+            <form onSubmit={handleBedwarsNameSubmit}>
           <label>
             Username
             <input
@@ -432,23 +447,44 @@ export const User = () => {
               onChange={(e) => setBedwarsName(e.target.value)}
             />
           </label>
+          <br></br>
           <input type="submit" value="Submit" />
-        </form>
-
-        {currentBedwarsData[0] && currentBedwarsData[1] && (
-          <div>
-            <p>Bedwars Level: {currentBedwarsData[0]}</p>
-            <p>
-              Last Checked: {formatHumanReadableDate(currentBedwarsData[1])}
-            </p>
-            <br></br>
+            </form>
           </div>
-        )}
+        </div>
 
-        {/* <button onClick={() => handleBedwarsLevelButton()}>Print Level</button> */}
-
-        <h3>Geometry Dash (Star Count)</h3>
-        <form onSubmit={handleGDFormSubmit}>
+        {/* Geometry Dash section */}
+        <div className={styles["game-section"]}>
+          <div className={styles["graph"]}>
+            <LineChart
+              width={500}
+              height={300}
+              data={GDData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis domain={domains2} />{" "}
+              {/* Use domains2 state to set Y-axis domain */}
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="stars"
+                stroke="#82ca9d"
+                activeDot={{ r: 8 }}
+              />
+            </LineChart>
+          </div>
+          <div className={styles["game-details"]}>
+            <img src={GDLogo} alt="Geometry Dash Icon" />
+            <h3>Geometry Dash</h3>
+            <form onSubmit={handleGDFormSubmit}>
           <label>
             User ID
             <input
@@ -459,76 +495,14 @@ export const User = () => {
             />
           </label>
           <input type="submit" value="Submit" />
-        </form>
+            </form>
+          </div>
+        </div>
       </div>
 
-      {currentGDData[0] && currentGDData[1] && (
-        <div>
-          <p>Star Count: {currentGDData[0]}</p>
-          <p>Last Checked: {formatHumanReadableDate(currentGDData[1])}</p>
-          <br></br>
-        </div>
-      )}
-
-      {!bedwarsData.length && <h2 className="no-data">NO DATA</h2>}
-
-      {bedwarsData.length > 0 && (
-        <LineChart
-          width={500}
-          height={300}
-          data={bedwarsData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" />
-          <YAxis domain={domains} />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="level"
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      )}
-
-      {!GDData.length && <h2 className="no-data">NO DATA</h2>}
-
-      {GDData.length > 0 && (
-        <LineChart
-          width={500}
-          height={300}
-          data={GDData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" />
-          <YAxis domain={domains2} />{" "}
-          {/* Use domains2 state to set Y-axis domain */}
-          <Tooltip />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="stars"
-            stroke="#82ca9d"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      )}
-
+      {/* Incoming Friend Requests section */}
       <div className="incoming-requests">
-        <h3>Incoming Friend Requests</h3>
+        <h3>Incoming Friend Requests <b>({incomingRequests.length})</b></h3>
         <ul>
           {incomingRequests.map((request, index) => (
             <li key={index}>
@@ -544,11 +518,7 @@ export const User = () => {
         </ul>
       </div>
 
-      <div className="signout">
-        <button className="signout-button" onClick={signOutAndNavigate}>
-          Sign Out
-        </button>
-      </div>
+      {/* Sign out button */}
     </div>
   );
 };

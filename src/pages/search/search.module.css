@@ -1,0 +1,133 @@
+/* user.css */
+
+.user-account {
+    background-color: #353535;
+    color: #F3F6F9;
+    font-family: 'LEMONMILK-Regular', Arial, sans-serif;
+  }
+  
+  .profile-picture {
+    width: 125px;
+    border-radius: 50%;
+  }
+  
+  .profile-header {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+  }
+  
+  .profile-header h1 {
+    margin-right: 10px;
+  }
+  
+  .user-info p {
+    font-size: smaller;
+  }
+  
+  .game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .game-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .game-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .incoming-requests {
+    margin-top: 20px;
+  }
+  
+  .signout {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .signout-button {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .signout-button:hover {
+    background-color: #cc0000;
+  }
+  
+  .event-list {
+    float: right;
+    margin-top: 40px;
+    margin-right: 30px;
+  }
+  
+  .events {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .events h4 {
+    margin: 0;
+    padding: 5px;
+  }
+  
+  .search-container {
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+  .search-form {
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .search-submit {
+    width: 50%;
+    padding: 10px;
+    background-color: #0096A0;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-results {
+    margin-top: 20px;
+  }
+  
+  .profile-picture {
+    max-width: 100px;
+    height: auto;
+  }
+  
+  
+  .chart {
+    position: absolute; /* Set position to absolute */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-55%); /* Move to center */
+  }
+  
+  .friendreq-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }

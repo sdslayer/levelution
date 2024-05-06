@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase-config';
+import styles from './WebNavbar.module.css'
 
 const NavBar = () => {
   
@@ -22,7 +23,7 @@ const NavBar = () => {
 
     return (
         <nav>
-            <ul className="nav-list">
+            <ul className={styles["nav-list"]}>
                 <li>
                     <Link to="/leaderboards">Leaderboards</Link>
                 </li>
@@ -35,7 +36,7 @@ const NavBar = () => {
                 <li>
                   <Link to="/user">Your Profile</Link>
                 </li>
-                <li className="user-link">
+                <li className={styles["user-link"]}>
                     <Link to="/" onClick={signOutAndNavigate}>Sign Out</Link>
                 </li>
             </ul>

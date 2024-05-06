@@ -1,16 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { getDatabase, ref, get, } from "firebase/database";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import './leaderboards.css';
+import styles from './leaderboards.module.css';
 import NavBar from '../../components/WebNavbar';
 
 export const Leaderboards = () => {
     const [userDisplayName, setDisplayName] = useState(null);
     const [leaderboardBWData, setLeaderboardBWData] = useState([]);
     const [leaderboardGDData, setLeaderboardGDData] = useState([]);
+    const [activeTab, setActiveTab] = useState('bedwars');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -91,48 +93,49 @@ export const Leaderboards = () => {
     }
 
     return (
-        <div className='user-account'>
-        <NavBar />
+        <div className={styles['user-account']}>
+            <NavBar />
             <h1>Leaderboards</h1>
-            <h2>Hypixel (Bedwars)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Level</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {leaderboardBWData.map((user, index) => (
-                        <tr key={index}>
-                            <td>{user.name}</td>
-                            <td>{user.level}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h2>Geometry Dash (Star Count)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Stars</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {leaderboardGDData.map((user, index) => (
-                        <tr key={index}>
-                            <td>{user.name}</td>
-                            <td>{user.stars}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-    
-            <div className='signout'>
-                <button className="signout-button" onClick={signOutAndNavigate}>Sign Out</button>
+            <div className={styles.tabs}>
+                <button className={activeTab === 'bedwars' ? styles.active : ''} onClick={() => setActiveTab('bedwars')}>Hypixel (Bedwars)</button>
+                <button className={activeTab === 'geometryDash' ? styles.active : ''} onClick={() => setActiveTab('geometryDash')}>Geometry Dash (Star Count)</button>
             </div>
+            {activeTab === 'bedwars' && (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {leaderboardBWData.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.name}</td>
+                                <td>{user.level}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+            {activeTab === 'geometryDash' && (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Stars</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {leaderboardGDData.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.name}</td>
+                                <td>{user.stars}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }

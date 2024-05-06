@@ -19,7 +19,8 @@ def fetch_bedwars(bwkey, bwid, email):
             print(f"EMAIL {email} HAS BW KEY {bwkey} AND ID {bwid}")
             print("making test api call")
             # Make API request using fetched key
-            api_url = f'https://api.hypixel.net/player?uuid={bwid}&key={bwkey}'
+            # api_url = f'https://api.hypixel.net/player?uuid={bwid}&key={bwkey}'
+            api_url = f'https://api.hypixel.net/player?uuid={bwid}&key=126c1146-cd9d-4af6-a9ea-ac64bacb71d0'
             response = requests.get(api_url)
             
             # Check if the request was successful
@@ -45,9 +46,11 @@ def fetch_gdstars(gdname, email):
             response = requests.get(api_url)
             if response.status_code == 200:
                 star_count = response.json().get('stars', {})
+                username = response.json().get('userName', {})
                 print(star_count)
                 current_time = int(time.time()) # current time (wow)
                 db.reference(f'/users/{email}/data/GD/{current_time}').set(star_count) # will store under /currenttime/level, so like hypixelBW/2918309128 = 913
+                db.reference(f'/users/{email}/names/GD/actualname').set(username)
                 print(f"STAR COUNT FOR {email} AT {current_time} IS {star_count}") # i <3 debug statements
 
 # Define database Cloud Function to fetch key for each email and make API request

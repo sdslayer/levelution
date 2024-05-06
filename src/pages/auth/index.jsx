@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { auth, provider, database } from "../../config/firebase-config"; // Import database from firebase-config
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { ref, get, child, update } from "firebase/database"; // Import ref, set, get, child, exists, update from firebase/database
-// import './auth.css';
+import styles from './auth.module.css';
 
 export const Auth = () => {
     const navigate = useNavigate();
@@ -50,16 +51,16 @@ export const Auth = () => {
     };
 
     return (
-        <div className="login-page">
-            <h1 className="title">Levelution</h1>
-            <h3 className="line-1 anim-typewriter">Track your journey with just a few clicks.</h3>
-            <div className="sub-body">
-                <div className="fade-grid">
-                    <p className="fade-text-1">Start A New Adventure?</p>
-                    <p className="fade-text-2">Or Continue...</p>
+        <div className={styles["auth-page"]}> {/* Update class name */}
+            <h1 className={styles["title"]}>Levelution</h1> {/* Update class name */}
+            <h3 className={styles["line-1 anim-typewriter"]}>Track your journey with just a few clicks.</h3> {/* Update class name */}
+            <div className={styles["sub-body"]}> {/* Update class name */}
+                <div className={styles["fade-grid"]}> {/* Update class name */}
+                    <p className={styles["fade-text-1"]}>Start A New Adventure?</p> {/* Update class name */}
+                    <p className={styles["fade-text-2"]}>Or Continue...</p> {/* Update class name */}
                 </div>
             </div>
-            <button className="google-login" onClick={signInWithGoogle}>
+            <button className={styles["google-login"]} onClick={signInWithGoogle}> {/* Update class name */}
                 Sign In With Google
             </button>
         </div>

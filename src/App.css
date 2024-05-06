@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #353535;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -38,7 +38,7 @@
 }
 
 body{
-  background-color: lightcyan;
+  background-color: #353535;
 }
 
 .login-page p{

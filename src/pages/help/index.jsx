@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase-config';
-import './help.css';
+import styles from './help.module.css';
 import NavBar from '../../components/WebNavbar';
 import BWServer from '../../images/hypixelserver.png'
 import BWChat from '../../images/hypixelchat.PNG'
@@ -49,7 +50,7 @@ export const Help = () => {
       };
 
     return (
-        <div className='user-account'>
+        <div className={styles['user-account']}>
         <NavBar />
             <h1>Help</h1>
             <h4>This section of the site will assist you in getting started.</h4>
@@ -92,11 +93,8 @@ export const Help = () => {
 
             <br></br>
             <h2>About the site</h2>
-            <h3>The website logs all data using the informnation given by users once per day at 12:00am, PST.</h3>
+            <h3>The website logs all data using the information given by users once per day at 12:00am, PST.</h3>
     
-            <div className='signout'>
-                <button className="signout-button" onClick={signOutAndNavigate}>Sign Out</button>
-            </div>
         </div>
     );
 }

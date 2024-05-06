@@ -1,10 +1,10 @@
-import './App.css';
+import styles from './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Auth } from "./pages/auth/index";
 import { Main } from "./pages/main/index";
 import { User } from "./pages/user/index";
-import { Search } from "./pages/search/index";
 import { Leaderboards } from './pages/leaderboards/index';
+import { Search } from './pages/search/index';
 import { Help } from './pages/help/index';
 
 function App() {

@@ -1,0 +1,86 @@
+/* auth.css */
+
+@font-face {
+  font-family: 'LEMONMILK-Regular';
+  src: url('../../fonts/Lemon Milk Pro Ultra Light.otf') format('opentype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'LEMONMILK-Regular';
+  src: url('../../fonts/Lemon Milk Pro Regular.otf') format('opentype');
+  font-weight: 700;
+}
+
+.auth-page {
+  background-color: #353535; /* Match user-account background color */
+  color: #F3F6F9; /* Match user-account text color */
+  font-family: 'LEMONMILK-Regular', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.title {
+  font-size: 72px;
+  margin-bottom: 20px;
+}
+
+.line-1 {
+  animation: typewriter 1s steps(40) infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.sub-body {
+  margin-top: 20px;
+}
+
+.fade-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.fade-text-1,
+.fade-text-2 {
+  animation: fade 3s infinite;
+  margin-bottom: -20px;
+  font-size: larger;
+}
+
+@keyframes fade {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.google-login {
+  padding: 10px 20px;
+  background-color: #0096A0; /* Match signout-button background color */
+  color: white; /* Match signout-button text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin-top: 60px; /* Add margin top for spacing */
+}
+
+.google-login:hover {
+  background-color: #006d75; /* Match signout-button hover color */
+}
