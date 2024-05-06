@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import styles from './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Auth } from "./pages/auth/index";
 import { Main } from "./pages/main/index";
