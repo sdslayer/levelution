@@ -12,7 +12,7 @@ export const Search = () => {
     const [searchQuery, setSearchQuery] = useState(""); // State to store the search query
     const [searchedUserData, setSearchedUserData] = useState(null); // State to store the data of the searched user
     const [requestSent, setRequestStatus] = useState(false);
-    const [friendStatus, setFriendStatus] = useState(false);
+    // const [friendStatus, setFriendStatus] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
