@@ -26,10 +26,10 @@ export const Auth = () => {
                 authInfo.userCreated = Date.now();
             }
 
-            // Update user data in the database
+            // Update user data
             const updates = {
                 ...authInfo,
-                lastLogin: Date.now(), // Update the lastLogin value
+                lastLogin: Date.now(), // Update lastLogin
             };
             update(userRef, updates).then(() => {
                 console.log("User data updated in the database");
@@ -38,7 +38,6 @@ export const Auth = () => {
                 console.error("Error updating user data in the database: ", error);
             });
 
-            // Update authInfo with lastLogin value
             authInfo.lastLogin = updates.lastLogin;
             
             // Save authInfo to local storage
@@ -51,16 +50,16 @@ export const Auth = () => {
     };
 
     return (
-        <div className={styles["auth-page"]}> {/* Update class name */}
-            <h1 className={styles["title"]}>Levelution</h1> {/* Update class name */}
-            <h3 className={styles["line-1 anim-typewriter"]}>Track your journey with just a few clicks.</h3> {/* Update class name */}
-            <div className={styles["sub-body"]}> {/* Update class name */}
-                <div className={styles["fade-grid"]}> {/* Update class name */}
-                    <p className={styles["fade-text-1"]}>Start A New Adventure?</p> {/* Update class name */}
-                    <p className={styles["fade-text-2"]}>Or Continue...</p> {/* Update class name */}
+        <div className={styles["auth-page"]}>
+            <h1 className={styles["title"]}>Levelution</h1>
+            <h3 className={styles["line-1 anim-typewriter"]}>Track your journey with just a few clicks.</h3>
+            <div className={styles["sub-body"]}>
+                <div className={styles["fade-grid"]}>
+                    <p className={styles["fade-text-1"]}>Start A New Adventure?</p>
+                    <p className={styles["fade-text-2"]}>Or Continue...</p>
                 </div>
             </div>
-            <button className={styles["google-login"]} onClick={signInWithGoogle}> {/* Update class name */}
+            <button className={styles["google-login"]} onClick={signInWithGoogle}>
                 Sign In With Google
             </button>
         </div>
