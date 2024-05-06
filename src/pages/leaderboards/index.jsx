@@ -64,7 +64,11 @@ export const Leaderboards = () => {
             snapshot.forEach((childSnapshot) => {
                 const userData = childSnapshot.val();
                 const latestData = userData?.data?.GD;
-                const name = userData?.names?.GD?.name;
+                var name = userData?.names?.GD?.name;
+                if (userData?.names?.GD?.actualname) {
+                    name = userData?.names?.GD?.actualname;
+                    
+                }
                 if (latestData) {
                     const latestEntry = Object.entries(latestData).pop();
                     const stars = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
@@ -73,7 +77,7 @@ export const Leaderboards = () => {
             });
 
             // Sort users by level in descending order
-            users.sort((a, b) => b.level - a.level);
+            users.sort((a, b) => b.stars - a.stars);
 
             // Display top 10 users or all users if less than 10
             const topUsers = users.slice(0, Math.min(users.length, 10));

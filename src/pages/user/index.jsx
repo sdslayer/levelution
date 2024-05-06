@@ -43,6 +43,7 @@ export const User = () => {
   const [domains, setDomains] = useState([]);
   const [domains2, setDomains2] = useState([]);
   const [gdError, setGDError] = useState(false);
+  const [recentEvents, setRecentEvents] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,6 +70,50 @@ export const User = () => {
   }, [navigate]);
 
   const db = getDatabase();
+
+  
+
+  useEffect(() => {
+    const fetchRecentEvents = async () => {
+      const db = getDatabase();
+      const user = getAuth().currentUser;
+      const userEmail = user.email.replace(".", "_");
+
+      // Fetch recent events from GD
+      const gdEventsRef = ref(db, `users/${userEmail}/events/GD`);
+      const gdEventsSnapshot = await get(gdEventsRef);
+      const gdEvents = parseEventsSnapshot(gdEventsSnapshot);
+
+      // Fetch recent events from hypixelBW
+      const hypixelBWEventsRef = ref(db, `users/${userEmail}/events/hypixelBW`);
+      const hypixelBWEventsSnapshot = await get(hypixelBWEventsRef);
+      const hypixelBWEvents = parseEventsSnapshot(hypixelBWEventsSnapshot);
+
+      // Combine and sort events by timestamp
+      const combinedEvents = [...gdEvents, ...hypixelBWEvents];
+      combinedEvents.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Store only the most recent five events
+      const mostRecentEvents = combinedEvents.slice(0, 5);
+      setRecentEvents(mostRecentEvents);
+    };
+
+    fetchRecentEvents();
+  }, []);
+
+  const parseEventsSnapshot = (snapshot) => {
+    const events = [];
+    snapshot.forEach((childSnapshot) => {
+      const eventData = childSnapshot.val();
+      events.push({
+        prev: eventData.prev,
+        next: eventData.next,
+        timestamp: eventData.timestamp,
+        metric: eventData.metric,
+      });
+    });
+    return events;
+  };
 
   function getUserData() {
     const user = getAuth().currentUser;
@@ -406,15 +451,18 @@ export const User = () => {
         </div>
       </div>
 
-      <div className={styles["event-list"]}>
-      <h2>Recent Events</h2>
-      <div className={styles["events"]}>
-        <h4>Event 1</h4>
-        <h4>Event 2</h4>
-        <h4>Event 3</h4>
-        <h4>Event 4</h4>
-      </div>
-    </div>
+      
+        <div className={styles["event-list"]}>
+          <h2>Recent Activity</h2>
+          {recentEvents.map((event, index) => (
+            <div key={index} className={styles["events"]}>
+              <h3>{event.metric}</h3>
+              <h4>{event.prev} ➜ {event.next}</h4>
+              <p><i>{formatHumanReadableDate(event.timestamp * 1000)}</i></p>
+              <br></br>
+            </div>
+          ))}
+        </div>
 
       <div className={styles["game-info"]}>
         <h2>Games</h2>
@@ -440,7 +488,7 @@ export const User = () => {
               <Line
                 type="monotone"
                 dataKey="level"
-                stroke="#8884d8"
+                stroke="#00b8b8"
                 activeDot={{ r: 8 }}
               />
             </LineChart>
@@ -487,7 +535,7 @@ export const User = () => {
               <Line
                 type="monotone"
                 dataKey="stars"
-                stroke="#82ca9d"
+                stroke="#ffff00"
                 activeDot={{ r: 8 }}
               />
             </LineChart>
