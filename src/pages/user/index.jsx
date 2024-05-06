@@ -142,7 +142,6 @@ export const User = () => {
     try {
       const userData = await getUserData();
       const latestData = userData?.data?.hypixelBW;
-      console.log("aaaaaa");
       //   console.log(latestData)
       //   console.log(transformBedwarsData(latestData))
       if (latestData) {
@@ -151,7 +150,7 @@ export const User = () => {
         var higherdom = fullbwdata[fullbwdata.length - 1]["level"] + 2;
         setDomains([lowerdom, higherdom]);
         const latestEntry = Object.entries(latestData).pop();
-        const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+        const level = latestEntry[1] || 0;
         const time = parseInt(latestEntry[0]) * 1000 || 0;
         const bwdata = [level, time];
         setBedwarsData(fullbwdata);
@@ -200,17 +199,17 @@ export const User = () => {
 
       snapshot.forEach(async (childSnapshot) => {
         const senderEmail = childSnapshot.key.replace("_", ".");
-        // Fetch display name associated with email
+        // get display name associated with email
         const userData = await getUserDataByEmail(senderEmail);
-        if (userData.displayName) {
+        if (userData.name) {
           requests.push({
             email: senderEmail,
-            displayName: userData.displayName,
+            displayName: userData.name,
           });
         } else {
           requests.push({
             email: senderEmail,
-            displayName: senderEmail, // If display name not found, use email
+            displayName: senderEmail,
           });
         }
         setIncomingRequests([...requests]); // Update state after fetching all display names
