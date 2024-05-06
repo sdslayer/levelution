@@ -12,6 +12,7 @@ export const Search = () => {
     const [searchQuery, setSearchQuery] = useState(""); // State to store the search query
     const [searchedUserData, setSearchedUserData] = useState(null); // State to store the data of the searched user
     const [requestSent, setRequestStatus] = useState(false);
+    const [friendStatus, setFriendStatus] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,6 +46,7 @@ export const Search = () => {
     
                     // Check if the display name matches the search query
                     if (displayName === searchQuery) {
+                        var friendArray = []
                         // Fetch last login time
                         const userData = await getUserData(userEmail);
                         const lastLogin = userData.lastLogin || '';
@@ -76,6 +78,7 @@ export const Search = () => {
                             email: userEmail,
                             lastLogin: lastLogin,
                             profilePicture: userData.profilePhoto, // Assuming profile picture is stored in the database
+                            friends: Object.keys(userData.friends) || [],
                             bedwarsLevel: level || null, // Assuming bedwars level is stored in the database
                             GDstars: stars || null, // Assuming bedwars level is stored in the database
                             bedwarsData: bedwarsData,
@@ -83,8 +86,21 @@ export const Search = () => {
                             GDData: GDData,
                             GDDomains: GDDomains
                         });
-                        console.log(searchedUserData)
                         // console.log(userData)
+                        // console.log(Object.keys(userData.friends))
+                        // console.log(getAuth().currentUser.email.replace('.', '_'))
+
+                        friendArray = searchedUserData.friends
+                        var yourEmail = getAuth().currentUser.email.replace('.', '_')
+                        console.log(friendArray)
+                        console.log(searchedUserData)
+
+                        const isFriend = friendArray.includes(yourEmail);
+                        if (isFriend) {
+                            console.log("You are friends with the searched user");
+                        } else {
+                            console.log("You are not friends with the searched user");
+                        }
     
                     }
                 }).catch((error) => {
@@ -95,7 +111,6 @@ export const Search = () => {
             console.error("Error searching for user:", error);
         }
     }
-
     
 
   const transformBedwarsData = (data) => {

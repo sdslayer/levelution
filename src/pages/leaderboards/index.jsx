@@ -9,7 +9,8 @@ import NavBar from '../../components/WebNavbar';
 
 export const Leaderboards = () => {
     const [userDisplayName, setDisplayName] = useState(null);
-    const [leaderboardData, setLeaderboardData] = useState([]);
+    const [leaderboardBWData, setLeaderboardBWData] = useState([]);
+    const [leaderboardGDData, setLeaderboardGDData] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,7 +19,8 @@ export const Leaderboards = () => {
             if (user) {
                 setDisplayName(user.displayName);
                 console.log(userDisplayName)
-                fetchLeaderboardData();
+                fetchLeaderboardBWData();
+                fetchLeaderboardGDData();
             } else {
                 navigate('/');
             }
@@ -27,7 +29,7 @@ export const Leaderboards = () => {
 
     const db = getDatabase();
 
-    async function fetchLeaderboardData() {
+    async function fetchLeaderboardBWData() {
         const userRef = ref(db, 'users');
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
@@ -48,7 +50,32 @@ export const Leaderboards = () => {
 
             // Display top 10 users or all users if less than 10
             const topUsers = users.slice(0, Math.min(users.length, 10));
-            setLeaderboardData(topUsers);
+            setLeaderboardBWData(topUsers);
+        }
+    }
+
+    async function fetchLeaderboardGDData() {
+        const userRef = ref(db, 'users');
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const users = [];
+            snapshot.forEach((childSnapshot) => {
+                const userData = childSnapshot.val();
+                const latestData = userData?.data?.GD;
+                const name = userData?.names?.GD?.name;
+                if (latestData) {
+                    const latestEntry = Object.entries(latestData).pop();
+                    const stars = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+                    users.push({ name, stars });
+                }
+            });
+
+            // Sort users by level in descending order
+            users.sort((a, b) => b.level - a.level);
+
+            // Display top 10 users or all users if less than 10
+            const topUsers = users.slice(0, Math.min(users.length, 10));
+            setLeaderboardGDData(topUsers);
         }
     }
 
@@ -76,10 +103,28 @@ export const Leaderboards = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {leaderboardData.map((user, index) => (
+                    {leaderboardBWData.map((user, index) => (
                         <tr key={index}>
                             <td>{user.name}</td>
                             <td>{user.level}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2>Geometry Dash (Star Count)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Stars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {leaderboardGDData.map((user, index) => (
+                        <tr key={index}>
+                            <td>{user.name}</td>
+                            <td>{user.stars}</td>
                         </tr>
                     ))}
                 </tbody>
