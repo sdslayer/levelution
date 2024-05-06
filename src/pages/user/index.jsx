@@ -42,6 +42,7 @@ export const User = () => {
   const [GDData, setGDData] = useState([]);
   const [domains, setDomains] = useState([]);
   const [domains2, setDomains2] = useState([]);
+  const [gdError, setGDError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -305,13 +306,23 @@ export const User = () => {
   };
 
   const handleGDFormSubmit = (event) => {
+    setGDError(false);
     event.preventDefault();
 
     const user = getAuth().currentUser;
     const email = user.email.replace(".", "_");
     const game = "GD";
 
+    var isNumber = (!isNaN(+userGDName))
+
+    if(!isNumber) {
+      console.log("NOT A VALID ID")
+      setGDError(true);
+      return
+    }
+
     console.log("GD Name:", userGDName);
+    setGDError(false);
     // const uuid = "ab5e4e78-c45c-42ba-b12b-197c9edade37";
     const name = userGDName;
     const nameRef = ref(db, `users/${email}/names/${game}`);
@@ -496,6 +507,9 @@ export const User = () => {
           </label>
           <input type="submit" value="Submit" />
             </form>
+            {gdError && (
+              <h2>ERROR: Not a valid ID</h2>
+            )}
           </div>
         </div>
       </div>
