@@ -561,13 +561,12 @@ export const User = () => {
         </div>
       </div>
 
-      {/* Incoming Friend Requests section */}
       <div className="incoming-requests">
         <h3>Incoming Friend Requests <b>({incomingRequests.length})</b></h3>
         <ul>
           {incomingRequests.map((request, index) => (
             <li key={index}>
-              {request.displayName} {/* Display the user's display name */}
+              {request.displayName}
               <button onClick={() => handleAcceptRequest(request.email)}>
                 Accept
               </button>
@@ -579,7 +578,6 @@ export const User = () => {
         </ul>
       </div>
 
-      {/* Sign out button */}
     </div>
   );
 };

@@ -42,7 +42,7 @@ export const Leaderboards = () => {
                 const name = userData?.names?.hypixelBW?.name;
                 if (latestData) {
                     const latestEntry = Object.entries(latestData).pop();
-                    const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+                    const level = latestEntry[1] || 0;
                     users.push({ name, level });
                 }
             });
@@ -71,7 +71,7 @@ export const Leaderboards = () => {
                 }
                 if (latestData) {
                     const latestEntry = Object.entries(latestData).pop();
-                    const stars = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
+                    const stars = latestEntry[1] || 0;
                     users.push({ name, stars });
                 }
             });
@@ -82,17 +82,6 @@ export const Leaderboards = () => {
             // Display top 10 users or all users if less than 10
             const topUsers = users.slice(0, Math.min(users.length, 10));
             setLeaderboardGDData(topUsers);
-        }
-    }
-
-    const signOutAndNavigate = async () => {
-        try {
-            // Sign out
-            await signOut(auth);
-            localStorage.removeItem("auth"); // Remove user data from local storage
-            navigate("/"); // Navigate to auth
-        } catch (error) {
-            console.error("Error signing out:", error);
         }
     }
 
