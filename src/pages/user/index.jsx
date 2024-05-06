@@ -312,7 +312,7 @@ export const User = () => {
     // const uuid = "ab5e4e78-c45c-42ba-b12b-197c9edade37";
     const name = userGDName;
     const nameRef = ref(db, `users/${email}/names/${game}`);
-    const actualnameRef = ref(db, `users/${email}/names/${game}`);
+    // const actualnameRef = ref(db, `users/${email}/names/${game}`);
     set(child(nameRef, "name"), name)
       .then(() => {
         console.log(`Name stored in the database under ${email}/names/${game}`);
@@ -321,7 +321,7 @@ export const User = () => {
         console.error("Error storing name in the database:", error);
       });
     
-    axios.get("https://randomuser.me/api/")
+    axios.get("https://api.prevter.me/gd/profile/" + name)
             .then(({data}) => {
                 console.log(data);
             })
