@@ -121,7 +121,7 @@ export const Leaderboards = () => {
             <NavBar />
             <h1>Leaderboards</h1>
             <div className={styles.tabs}>
-                <button className={activeTab === 'bedwars' ? styles.active : ''} onClick={() => setActiveTab('bedwars')}>Hypixel (Bedwars)</button>
+                <button className={activeTab === 'bedwars' ? styles.active : ''} onClick={() => setActiveTab('bedwars')}>Hypixel Bedwars (Level)</button>
                 <button className={activeTab === 'geometryDash' ? styles.active : ''} onClick={() => setActiveTab('geometryDash')}>Geometry Dash (Star Count)</button>
                 <button className={activeTab === 'geometryDashMoons' ? styles.active : ''} onClick={() => setActiveTab('geometryDashMoons')}>Geometry Dash (Moon Count)</button>
             </div>
