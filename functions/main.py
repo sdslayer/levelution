@@ -19,16 +19,19 @@ def eventhandler(next, game, email, time):
             actualdata = bwdata.get()
             dictList = list(actualdata.items())
             print(dictList)
-            prevlvl = dictList[-2][1]
-            print(f"prevlvl: {prevlvl}")
-            print(f"next: {next}")
-            
-            if prevlvl != next:
-                print(f"stats are different! updating...")
-                db.reference(f'/users/{email}/events/{game}/{time}/prev').set(prevlvl)
-                db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
-                db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
-                db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
+            if len(dictList) < 2:
+                 return("not enough data for event handler")
+            else:
+                prevlvl = dictList[-2][1]
+                print(f"prevlvl: {prevlvl}")
+                print(f"next: {next}")
+                
+                if prevlvl != next:
+                    print(f"stats are different! updating...")
+                    db.reference(f'/users/{email}/events/{game}/{time}/prev').set(prevlvl)
+                    db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
+                    db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
+                    db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
                  
     if game == "GD":
             metric = "Star Count (Geometry Dash)"
@@ -37,24 +40,27 @@ def eventhandler(next, game, email, time):
             actualdata = gddata.get()
             dictList = list(actualdata.items())
             print(dictList)
-            prevstar = dictList[-2][1]
-            print(f"prevstar: {prevstar}")
-            print(f"next: {next}")
+            if len(dictList) < 2:
+                 return("not enough data for event handler")
+            else:
+                prevstar = dictList[-2][1]
+                print(f"prevstar: {prevstar}")
+                print(f"next: {next}")
 
-            if prevstar != next:
-                print(f"stats are different! updating...")
-                db.reference(f'/users/{email}/events/{game}/{time}/prev').set(prevstar)
-                db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
-                db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
-                db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
+                if prevstar != next:
+                    print(f"stats are different! updating...")
+                    db.reference(f'/users/{email}/events/{game}/{time}/prev').set(prevstar)
+                    db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
+                    db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
+                    db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
 
 
 def fetch_bedwars(bwkey, bwid, email):
         print("ENTER BEDWARS FUNCTION")
-        if bwkey is None or bwid is None:
+        if bwid is None:
             print(f"EMAIL {email} MISSING BW KEY OR ID")
         else:
-            print(f"EMAIL {email} HAS BW KEY {bwkey} AND ID {bwid}")
+            print(f"EMAIL {email} HAS BW ID {bwid}")
             print("making test api call")
             # Make API request using fetched key
             # api_url = f'https://api.hypixel.net/player?uuid={bwid}&key={bwkey}'
