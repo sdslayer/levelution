@@ -30,6 +30,7 @@ import GDLogo from "../../images/logos/gd.png"
 export const User = () => {
   const [userDisplayName, setDisplayName] = useState(null);
   const [userLastLogin, setLastLogin] = useState(null);
+  const [userDateCreated, setDateCreated] = useState(null);
   const [userBedwarsKey, setBedwarsKey] = useState("");
   const [userBedwarsName, setBedwarsName] = useState("");
   const [userGDName, setGDName] = useState("");
@@ -63,6 +64,14 @@ export const User = () => {
           .catch((error) => {
             console.error("Error fetching last login time:", error);
           });
+
+          getDateCreated()
+            .then((dateCreated) => {
+              setDateCreated(dateCreated * 1000);
+            })
+            .catch((error) => {
+              console.error("Error fetching last login time:", error);
+            });
       } else {
         navigate("/");
       }
@@ -133,6 +142,15 @@ export const User = () => {
     try {
       const userData = await getUserData();
       return userData.lastLogin || "";
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function getDateCreated() {
+    try {
+      const userData = await getUserData();
+      return userData.userCreated || "";
     } catch (error) {
       throw error;
     }
@@ -401,6 +419,15 @@ export const User = () => {
     return new Date(dateString).toLocaleString(undefined, options);
   }
 
+  function formatHumanReadableYear(dateString) {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  }
+
   // function handleBedwarsLevelButton() {
   //     if (userBedwarsKey && userBedwarsID){
   //         axios.get("https://api.hypixel.net/player?uuid=" + userBedwarsID + "&key=" + userBedwarsKey)
@@ -448,6 +475,7 @@ export const User = () => {
           <h1>Welcome, {userDisplayName}!</h1>
           <img src={userProfilePicture} alt="Profile" />
         </div>
+          <h4 className={styles["date-created"]}><i>Member since {formatHumanReadableYear(userDateCreated)}</i></h4>
       </div>
 
       
