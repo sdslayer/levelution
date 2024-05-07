@@ -137,7 +137,7 @@ def fetch_and_store_data(data):
 
     return 'made it out'
 
-@scheduler_fn.on_schedule(schedule="0 0 * * *") # crontab = at every midnight
+@scheduler_fn.on_schedule(schedule="0 7 * * *") # crontab = at every midnight accounting for timezones
 # @scheduler_fn.on_schedule(schedule="*/2 * * * *") # crontab = every 2 minutes
 def trigger_cloud_function(event: scheduler_fn.ScheduledEvent) -> None:
     print("Scheduled function triggered.")
