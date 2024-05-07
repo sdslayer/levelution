@@ -35,15 +35,18 @@ export const Search = () => {
   useEffect(() => {
     // Check if searchedUserData is updated
     if (searchedUserData) {
-      console.log(searchedUserData);
+      // console.log(searchedUserData);
 
       var yourEmail = getAuth().currentUser.email.replace('.', '_')
-      var friendArray = Object.keys(searchedUserData.friends) || []
+      if (searchedUserData.friends) {
+        var friendArray = Object.keys(searchedUserData.friends) || []
 
-      if (friendArray.includes(yourEmail)) {
-        setFriendStatus(true)
-      } else {
-        setFriendStatus(false)
+        if (friendArray.includes(yourEmail)) {
+          setFriendStatus(true)
+        } else {
+          setFriendStatus(false)
+        }
+
       }
     }
 
@@ -83,10 +86,12 @@ export const Search = () => {
 
             const bedwarsDomains = ['auto', 'auto'];
             const GDDomains = ['auto', 'auto'];
+            const timeCreated = userData.userCreated;
 
             setSearchedUserData({
               email: userEmail,
               lastLogin: lastLogin,
+              dateCreated: timeCreated,
               displayName: userData.name,
               profilePicture: userData.profilePhoto,
               friends: userData.friends,
@@ -105,6 +110,7 @@ export const Search = () => {
     } catch (error) {
       console.error("Error searching for user:", error);
     }
+    console.log(searchedUserData)
   }
 
 
@@ -177,6 +183,11 @@ export const Search = () => {
     return new Date(dateString).toLocaleString(undefined, options);
   }
 
+  function formatHumanReadableYear(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleString(undefined, options);
+  }
+
   return (
     <div className={styles['user-account']}>
       <NavBar />
@@ -198,6 +209,7 @@ export const Search = () => {
           <div className={styles["search-results"]}>
             <h3>User Information</h3>
             <p>Username: <b>{searchedUserData.displayName}</b></p>
+            <p>Member since: <b>{formatHumanReadableYear(searchedUserData.dateCreated)}</b></p>
             <p>Last Login: <b>{formatHumanReadableDate(searchedUserData.lastLogin)}</b></p>
             <img className={styles["profile-picture"]} src={searchedUserData.profilePicture} alt="Profile" />
             <h4>Game Levels</h4>
