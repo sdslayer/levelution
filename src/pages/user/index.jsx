@@ -67,7 +67,7 @@ export const User = () => {
 
           getDateCreated()
             .then((dateCreated) => {
-              setDateCreated(dateCreated * 1000);
+              setDateCreated(dateCreated);
             })
             .catch((error) => {
               console.error("Error fetching last login time:", error);
