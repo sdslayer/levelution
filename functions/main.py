@@ -53,6 +53,27 @@ def eventhandler(next, game, email, time):
                     db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
                     db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
                     db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
+                 
+    if game == "GDmoons":
+            metric = "Moon Count (Geometry Dash)"
+            gddata = db.reference(f'/users/{email}/data/{game}/')
+            print(gddata.get())
+            actualdata = gddata.get()
+            dictList = list(actualdata.items())
+            print(dictList)
+            if len(dictList) < 2:
+                 return("not enough data for event handler")
+            else:
+                prevmoon = dictList[-2][1]
+                print(f"prevmoon: {prevmoon}")
+                print(f"next: {next}")
+
+                if prevmoon != next:
+                    print(f"stats are different! updating...")
+                    db.reference(f'/users/{email}/events/{game}/{time}/prev').set(prevmoon)
+                    db.reference(f'/users/{email}/events/{game}/{time}/next').set(next)
+                    db.reference(f'/users/{email}/events/{game}/{time}/timestamp').set(time)
+                    db.reference(f'/users/{email}/events/{game}/{time}/metric').set(metric)
 
 
 def fetch_bedwars(bwkey, bwid, email):
@@ -93,15 +114,19 @@ def fetch_gdstars(gdname, email):
             response = requests.get(api_url)
             if response.status_code == 200:
                 star_count = response.json().get('stars', {})
+                moon_count = response.json().get('moons', {})
                 username = response.json().get('userName', {})
                 print(f"star count: {star_count}, username: {username}")
+                print(f"moon count: {moon_count}, username: {username}")
                 current_time = int(time.time()) # current time (wow)
-                db.reference(f'/users/{email}/data/GD/{current_time}').set(star_count) # will store under /currenttime/level, so like hypixelBW/2918309128 = 913
+                db.reference(f'/users/{email}/data/GD/{current_time}').set(star_count)
+                db.reference(f'/users/{email}/data/GDmoons/{current_time}').set(moon_count) # will store under /currenttime/level, so like hypixelBW/2918309128 = 913
                 print("setting actualname")
                 db.reference(f'/users/{email}/names/GD/actualname').set(username)
                 print(f"STAR COUNT FOR {email} AT {current_time} IS {star_count}") # i <3 debug statements
 
             eventhandler(star_count, "GD", email, current_time)
+            eventhandler(moon_count, "GDmoons", email, current_time)
 
 
 

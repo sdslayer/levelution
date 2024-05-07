@@ -185,17 +185,23 @@ export const User = () => {
     try {
       const userData = await getUserData();
       const latestData = userData?.data?.GD;
-      console.log("aaabbbbbaaa");
-      console.log(latestData);
-      if (latestData) {
-        var fulldata = transformGDData(latestData);
+      const latestMoonData = userData?.data?.GDmoons;
+      // console.log("aaabbbbbaaa");
+      // console.log(latestData);
+      // console.log(latestMoonData);
+      if (latestData && latestMoonData) {
+        var fulldata = transformGDData(latestData, latestMoonData);
         var lowerdom = fulldata[0]["level"] - 2;
         var higherdom = fulldata[fulldata.length - 1]["level"] + 2;
         setDomains2([lowerdom, higherdom]);
-        const latestEntry = Object.entries(latestData).pop();
-        const level = latestEntry[1] || 0; // Assuming level is stored in the 'level' field
-        const time = parseInt(latestEntry[0]) * 1000 || 0;
-        const gddata = [level, time];
+        const latestStarEntry = Object.entries(latestData).pop();
+        const level = latestStarEntry[1] || 0; // Assuming level is stored in the 'level' field
+        const latestMoonEntry = Object.entries(latestMoonData).pop();
+        const moons = latestMoonEntry[1] || 0; // Assuming level is stored in the 'level' field
+        const time = parseInt(latestStarEntry[0]) * 1000 || 0;
+        const gddata = [level, moons, time];
+        console.log(gddata)
+        console.log(fulldata)
         setGDData(fulldata);
         setCurrentGDData(gddata);
         return level || "";
@@ -452,11 +458,32 @@ export const User = () => {
     }));
   };
   
-  const transformGDData = (data) => {
-    return Object.entries(data).map(([time, level]) => ({
-      time: formatDate(new Date(parseInt(time) * 1000)), // Format date string
-      stars: level,
-    }));
+  const transformGDData = (dataStars, dataMoons) => {
+    const combinedData = {};
+  
+    // Map stars data
+    Object.entries(dataStars).forEach(([time, stars]) => {
+      combinedData[time] = { time: formatDate(new Date(parseInt(time) * 1000)), stars };
+    });
+  
+    // Map moons data
+    Object.entries(dataMoons).forEach(([time, moons]) => {
+      if (combinedData[time]) {
+        // If time entry already exists, add moons to existing object
+        combinedData[time].moons = moons;
+      } else {
+        // If time entry doesn't exist, create new object with moons
+        combinedData[time] = { time: formatDate(new Date(parseInt(time) * 1000)), moons };
+      }
+    });
+  
+    // Convert combinedData object to array
+    const transformedData = Object.values(combinedData);
+  
+    console.log("Transformed Data:");
+    console.log(transformedData);
+  
+    return transformedData;
   };
   
   function formatDate(date) {
@@ -516,7 +543,8 @@ export const User = () => {
                 type="monotone"
                 dataKey="level"
                 stroke="#00b8b8"
-                activeDot={{ r: 8 }}
+                activeDot={{ r: 4 }}
+                dot={{ r: 2 }}
               />
             </LineChart>
           </div>
@@ -562,8 +590,36 @@ export const User = () => {
               <Line
                 type="monotone"
                 dataKey="stars"
-                stroke="#ffff00"
-                activeDot={{ r: 8 }}
+                stroke="#a8a800"
+                activeDot={{ r: 4 }}
+                dot={{ r: 2 }}
+              />
+            </LineChart>
+          </div>
+          <div className={styles["graph"]}>
+            <LineChart
+              width={500}
+              height={300}
+              data={GDData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis domain={domains2} />{" "}
+              {/* Use domains2 state to set Y-axis domain */}
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="moons"
+                stroke="#0065a8"
+                activeDot={{ r: 4 }}
+                dot={{ r: 2 }}
               />
             </LineChart>
           </div>

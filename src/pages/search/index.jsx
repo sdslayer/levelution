@@ -248,7 +248,7 @@ export const Search = () => {
                   <Line
                     type="monotone"
                     dataKey="level"
-                    stroke="#8884d8"
+                    stroke="#00b8b8"
                     activeDot={{ r: 8 }}
                   />
                 </LineChart>
@@ -284,10 +284,12 @@ export const Search = () => {
                   <Line
                     type="monotone"
                     dataKey="stars"
-                    stroke="#82ca9d"
+                    stroke="#a8a800"
                     activeDot={{ r: 8 }}
                   />
                 </LineChart>
+
+                
               </div>
             )}
 
