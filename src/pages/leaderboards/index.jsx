@@ -12,6 +12,7 @@ export const Leaderboards = () => {
     const [userDisplayName, setDisplayName] = useState(null);
     const [leaderboardBWData, setLeaderboardBWData] = useState([]);
     const [leaderboardGDData, setLeaderboardGDData] = useState([]);
+    const [leaderboardGDMoonData, setLeaderboardGDMoonData] = useState([]);
     const [activeTab, setActiveTab] = useState('bedwars');
     const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ export const Leaderboards = () => {
                 console.log(userDisplayName)
                 fetchLeaderboardBWData();
                 fetchLeaderboardGDData();
+                fetchLeaderboardGDMoonData();
             } else {
                 navigate('/');
             }
@@ -85,6 +87,35 @@ export const Leaderboards = () => {
         }
     }
 
+    async function fetchLeaderboardGDMoonData() {
+        const userRef = ref(db, 'users');
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const users = [];
+            snapshot.forEach((childSnapshot) => {
+                const userData = childSnapshot.val();
+                const latestData = userData?.data?.GDmoons;
+                var name = userData?.names?.GD?.name;
+                if (userData?.names?.GD?.actualname) {
+                    name = userData?.names?.GD?.actualname;
+                    
+                }
+                if (latestData) {
+                    const latestEntry = Object.entries(latestData).pop();
+                    const moons = latestEntry[1] || 0;
+                    users.push({ name, moons });
+                }
+            });
+
+            // Sort users by level in descending order
+            users.sort((a, b) => b.moons - a.moons);
+
+            // Display top 10 users or all users if less than 10
+            const topUsers = users.slice(0, Math.min(users.length, 10));
+            setLeaderboardGDMoonData(topUsers);
+        }
+    }
+
     return (
         <div className={styles['user-account']}>
             <NavBar />
@@ -92,6 +123,7 @@ export const Leaderboards = () => {
             <div className={styles.tabs}>
                 <button className={activeTab === 'bedwars' ? styles.active : ''} onClick={() => setActiveTab('bedwars')}>Hypixel (Bedwars)</button>
                 <button className={activeTab === 'geometryDash' ? styles.active : ''} onClick={() => setActiveTab('geometryDash')}>Geometry Dash (Star Count)</button>
+                <button className={activeTab === 'geometryDashMoons' ? styles.active : ''} onClick={() => setActiveTab('geometryDashMoons')}>Geometry Dash (Moon Count)</button>
             </div>
             {activeTab === 'bedwars' && (
                 <table>
@@ -124,6 +156,24 @@ export const Leaderboards = () => {
                             <tr key={index}>
                                 <td>{user.name}</td>
                                 <td>{user.stars}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+            {activeTab === 'geometryDashMoons' && (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Moons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {leaderboardGDMoonData.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.name}</td>
+                                <td>{user.moons}</td>
                             </tr>
                         ))}
                     </tbody>
