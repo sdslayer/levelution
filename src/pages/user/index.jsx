@@ -93,17 +93,27 @@ export const User = () => {
       const gdEventsSnapshot = await get(gdEventsRef);
       const gdEvents = parseEventsSnapshot(gdEventsSnapshot);
 
+      // Fetch recent events from GDmoons
+      const gdMoonEventsRef = ref(db, `users/${userEmail}/events/GDmoons`);
+      const gdMoonEventsSnapshot = await get(gdMoonEventsRef);
+      const gdMoonEvents = parseEventsSnapshot(gdMoonEventsSnapshot);
+
       // Fetch recent events from hypixelBW
       const hypixelBWEventsRef = ref(db, `users/${userEmail}/events/hypixelBW`);
       const hypixelBWEventsSnapshot = await get(hypixelBWEventsRef);
       const hypixelBWEvents = parseEventsSnapshot(hypixelBWEventsSnapshot);
 
       // Combine and sort events by timestamp
-      const combinedEvents = [...gdEvents, ...hypixelBWEvents];
+      const combinedEvents = [...gdEvents, ...gdMoonEvents, ...hypixelBWEvents];
       combinedEvents.sort((a, b) => b.timestamp - a.timestamp);
+
+      // console.log("combine")
+      // console.log(combinedEvents)
 
       // Store only the most recent five events
       const mostRecentEvents = combinedEvents.slice(0, 5);
+      console.log("recent")
+      console.log(mostRecentEvents)
       setRecentEvents(mostRecentEvents);
     };
 
