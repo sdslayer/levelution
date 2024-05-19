@@ -43,8 +43,7 @@ export const Search = () => {
 
         if (friendArray.includes(yourEmail)) {
           setFriendStatus(true)
-        } else {
-          setFriendStatus(false)
+          // console.log("friend stat changed to true")
         }
 
       }
@@ -53,6 +52,8 @@ export const Search = () => {
   }, [searchedUserData]);
 
   async function searchUser() {
+    setFriendStatus(false);
+    // console.log("friend stat changed to false")
     try {
       const userRef = ref(db, 'users');
       const snapshot = await get(userRef);
